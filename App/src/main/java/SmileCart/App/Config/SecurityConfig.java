@@ -2,6 +2,8 @@ package SmileCart.App.Config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -10,32 +12,25 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+import SmileCart.App.SecurityService.CustomUserDetails;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 	@Bean
-	public SecurityFilterChain SecurityFilterChain(HttpSecurity http) {
-		http.authorizeHttpRequests(auth -> auth.requestMatchers("/api/v1/product/**").permitAll()
-				.requestMatchers("/api/v1/cart/add").permitAll().anyRequest().permitAll())
-				.formLogin((f) -> f.permitAll());
+	public SecurityFilterChain securityFilterChain(HttpSecurity http) {
+		http.csrf((csrf) -> csrf.disable()).cors(cors -> cors.disable())
+				.authorizeHttpRequests(auth -> auth.requestMatchers("/api/v1/product/**").permitAll()
+						.requestMatchers(HttpMethod.POST, "/api/v1/user/**").permitAll()
+						.requestMatchers("/api/v1/category/**").permitAll()
+						.requestMatchers(HttpMethod.POST, "/api/v1/cart/add").permitAll()
+						.requestMatchers("/api/v1/cart/add").permitAll().anyRequest().authenticated())
+				.formLogin((f) -> f.permitAll().defaultSuccessUrl("/home"));
 		return http.build();
 	}
 
 	@Bean
-	public UserDetailsService userDetailsService() {
-		return new CustomUserDetails();
-	}
-
-	@Bean
-	public DaoAuthenticationProvider authenticationProvider() {
-		DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-		authProvider.setUserDetailsService(userDetailsService());
-		authProvider.setPasswordEncoder(passWordEncoder());
-		return authProvider;
-	}
-
-	@Bean
-	public PasswordEncoder passWordEncoder() {
+	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
 }

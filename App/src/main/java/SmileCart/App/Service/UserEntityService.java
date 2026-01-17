@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import SmileCart.App.DTO.UserRecord;
@@ -16,6 +17,8 @@ import SmileCart.App.Repository.UserRepository;
 public class UserEntityService {
 	@Autowired
 	private UserRepository userRepo;
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
 	public ResponseEntity<?> getAllUser() {
 		try {
@@ -61,7 +64,7 @@ public class UserEntityService {
 			newUser.setFirstName(firstName);
 			newUser.setLastName(lastName);
 			newUser.setEmail(email);
-			newUser.setPassword(password);
+			newUser.setPassword(passwordEncoder.encode(password));
 			newUser.setPhoneNumber(phoneNumber);
 			userRepo.save(newUser);
 			return ResponseEntity.status(HttpStatus.CREATED).body("created successfully");
@@ -108,6 +111,22 @@ public class UserEntityService {
 			}
 			userRepo.deleteById(id);
 			return ResponseEntity.status(HttpStatus.OK).body("Deleted successfully");
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+		}
+	}
+
+//	registration 
+	public ResponseEntity<?> userRegistration(String email, String password) {
+		try {
+			if (userRepo.findByemail(email).isPresent()) {
+				return ResponseEntity.status(HttpStatus.CONFLICT).body("User already exists");
+			}
+			UserEntity user = new UserEntity();
+			user.setEmail(email);
+			user.setPassword(passwordEncoder.encode(password));
+			userRepo.save(user);
+			return ResponseEntity.status(HttpStatus.CREATED).body("created successfully"); 
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
 		}
