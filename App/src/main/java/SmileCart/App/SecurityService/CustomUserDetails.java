@@ -1,6 +1,10 @@
 package SmileCart.App.SecurityService;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -9,17 +13,18 @@ import org.springframework.stereotype.Service;
 
 import SmileCart.App.Model.UserEntity;
 import SmileCart.App.Repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 
 @Service
+
 public class CustomUserDetails implements UserDetailsService {
 	@Autowired
 	private UserRepository userRepo;
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		UserEntity user = userRepo.findByemail(username)
-				.orElseThrow(() -> new UsernameNotFoundException("user was not found"));
-		return User.builder().username(user.getEmail()).password(user.getPassword()).roles("user").build();
+		UserEntity user = userRepo.findByemail(username).orElseThrow(() -> new RuntimeException("user was not found"));
+		return new User(user.getEmail(), user.getPassword(),
+				List.of(new SimpleGrantedAuthority(user.getRole().name())));
 	}
-
 }
