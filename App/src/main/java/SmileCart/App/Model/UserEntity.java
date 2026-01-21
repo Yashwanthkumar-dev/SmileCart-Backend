@@ -35,8 +35,7 @@ public class UserEntity {
 	private String email;
 	private String password;
 	private Long phoneNumber;
-	@Enumerated(EnumType.STRING)
-	private Role role;
+	private String role;
 
 	// @OneToOne(mappedBy = "usFer")
 	// private Cart cart;
@@ -44,11 +43,11 @@ public class UserEntity {
 		return id;
 	}
 
-	public Role getRole() {
+	public String getRole() {
 		return role;
 	}
 
-	public void setRole(Role role) {
+	public void setRole(String role) {
 		this.role = role;
 	}
 

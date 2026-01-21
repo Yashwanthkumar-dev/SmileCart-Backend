@@ -18,17 +18,13 @@ import SmileCart.App.Repository.UserRepository;
 import SmileCart.App.security.JwtUtil;
 
 @RestController
-@RequestMapping("/api/authentication")
+@RequestMapping("/authentication")
 public class AuthentionController {
 	@Autowired
 	private UserRepository userRepo;
 	@Autowired
 	private AuthenticationManager authManager;
-	@Autowired
-	private UserRegistration userRegister;
-	@Autowired
-	private Role role;
-	@Autowired
+		@Autowired
 	private PasswordEncoder passwordEncoder;
 	@Autowired
 	private JwtUtil util;
@@ -44,12 +40,12 @@ public class AuthentionController {
 		UserEntity newUser = new UserEntity();
 		newUser.setEmail(dto.getEmail());
 		newUser.setPassword(passwordEncoder.encode(dto.getPassword()));
-
+		System.out.println("Received email "+ dto.getEmail());
 //		role
 		if (dto.getRole() != null) {
 			newUser.setRole(dto.getRole());
 		} else {
-			newUser.setRole(Role.ROLE_USER);
+			newUser.setRole("USER");
 		}
 		userRepo.save(newUser);
 		return ResponseEntity.status(HttpStatus.CREATED).body("User was successfully created");
@@ -65,7 +61,7 @@ public class AuthentionController {
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("invalid Email and Password");
 		}
-		
+
 		String token = util.generateToken(loginRequest.getEmail());
 		return ResponseEntity.ok(token);
 	}
