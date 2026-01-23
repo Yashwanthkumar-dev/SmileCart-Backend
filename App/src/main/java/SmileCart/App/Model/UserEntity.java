@@ -21,8 +21,6 @@ import lombok.Setter;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
 @Builder
 @Table(name = "user_details")
 public class UserEntity {

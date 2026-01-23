@@ -75,6 +75,7 @@ public class JwtUtil {
 		return Jwts.parser().verifyWith(Key).build().parseSignedClaims(token).getPayload().getSubject();
 	}
 
+
 //	extract role
 
 	public String extractUserRole(String token) {

@@ -1,11 +1,14 @@
 package SmileCart.App.Controller;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,7 +19,7 @@ import SmileCart.App.Model.Role;
 import SmileCart.App.Model.UserEntity;
 import SmileCart.App.Repository.UserRepository;
 import SmileCart.App.security.JwtUtil;
-
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/authentication")
 public class AuthentionController {
@@ -40,6 +43,9 @@ public class AuthentionController {
 		UserEntity newUser = new UserEntity();
 		newUser.setEmail(dto.getEmail());
 		newUser.setPassword(passwordEncoder.encode(dto.getPassword()));
+		newUser.setFirstName(dto.getFirstName());
+		newUser.setLastName(dto.getLastName());
+		newUser.setPhoneNumber(dto.getPhoneNumber());
 		System.out.println("Received email "+ dto.getEmail());
 //		role
 		if (dto.getRole() != null) {
@@ -63,7 +69,7 @@ public class AuthentionController {
 		}
 
 		String token = util.generateToken(loginRequest.getEmail());
-		return ResponseEntity.ok(token);
+		return ResponseEntity.ok(Map.of("token",token));
 	}
 
 }
