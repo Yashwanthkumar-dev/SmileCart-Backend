@@ -35,11 +35,18 @@ public class SecurityConfig {
 			config.setAllowCredentials(true);
 			return config;
 		})).sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-				.authorizeHttpRequests(auth -> auth.requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**")
+				.authorizeHttpRequests(auth -> 
+				auth.requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**")
 						.permitAll().requestMatchers("/authentication/**").permitAll()
-						.requestMatchers("/api/v1/category").permitAll()we.requestMatchers("/api/v1/cart/**")
-						.authenticated().requestMatchers("/api/v1/product").permitAll()
-						.requestMatchers("/api/v1/user/**").permitAll().anyRequest().authenticated())
+						.requestMatchers("/api/v1/category").permitAll()
+						.requestMatchers("/api/v1/cart/**").authenticated()
+						.requestMatchers("/api/v1/product").permitAll()
+						.requestMatchers("/api/v1/order/**").authenticated()
+						.requestMatchers("/api/v1/user/**").permitAll()
+						.requestMatchers("/api/v1/product/**").permitAll()
+						.requestMatchers("/api/v1/category/**").permitAll()
+						.anyRequest().authenticated()
+						)
 				.addFilterBefore(Filter, UsernamePasswordAuthenticationFilter.class);
 
 		return http.build();
