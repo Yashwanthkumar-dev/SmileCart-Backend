@@ -6,6 +6,7 @@ import java.util.Collections;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -36,8 +37,9 @@ public class SecurityConfig {
 			return config;
 		})).sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authorizeHttpRequests(auth -> 
-				auth.requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**")
-						.permitAll().requestMatchers("/authentication/**").permitAll()
+				auth.requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
+				.requestMatchers("/api/admin/**").hasRole("admin")
+						.requestMatchers("/authentication/**").permitAll()
 						.requestMatchers("/api/v1/category").permitAll()
 						.requestMatchers("/api/v1/cart/**").authenticated()
 						.requestMatchers("/api/v1/product").permitAll()
@@ -45,11 +47,11 @@ public class SecurityConfig {
 						.requestMatchers("/api/v1/user/**").permitAll()
 						.requestMatchers("/api/v1/product/**").permitAll()
 						.requestMatchers("/api/v1/category/**").permitAll()
+						.requestMatchers("/api/v1/user/**").permitAll()
 						.anyRequest().authenticated()
 						)
 				.addFilterBefore(Filter, UsernamePasswordAuthenticationFilter.class);
-
-		return http.build();
+return http.build();
 	}
 
 	@Bean

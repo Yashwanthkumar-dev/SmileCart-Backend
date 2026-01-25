@@ -67,9 +67,15 @@ public class AuthentionController {
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("invalid Email and Password");
 		}
+		UserEntity user = userRepo.findByemail(loginRequest.getEmail())
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
 		String token = util.generateToken(loginRequest.getEmail());
-		return ResponseEntity.ok(Map.of("token",token));
+		return ResponseEntity.ok(Map.of(
+				"token",token,
+				"role",user.getRole(),
+				"email",user.getEmail()
+				));
 	}
 
 }
