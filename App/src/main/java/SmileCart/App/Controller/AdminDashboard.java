@@ -44,4 +44,16 @@ public class AdminDashboard {
 		}
 
 	}
+
+	@GetMapping("/all-orders")
+	public ResponseEntity<?> getAllOrder() {
+		try {
+			List<OrderEntity> allOrders = orderRepo.findAll();
+			return ResponseEntity.status(HttpStatus.OK).body(allOrders);	
+
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+		}
+	}
+
 }

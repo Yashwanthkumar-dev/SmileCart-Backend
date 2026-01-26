@@ -28,7 +28,6 @@ public class OrderController {
 		return orderService.placeOrder(email);
 
 	}
-	
 	@GetMapping("/my-orders")
 	public ResponseEntity<?> getMyOrders(Authentication auth) {
 	    return orderService.getMyOrders(auth.getName());

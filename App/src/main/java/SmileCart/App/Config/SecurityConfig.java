@@ -38,7 +38,7 @@ public class SecurityConfig {
 		})).sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authorizeHttpRequests(auth -> 
 				auth.requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
-				.requestMatchers("/api/admin/**").hasRole("admin")
+				.requestMatchers("/api/admin/**").hasAuthority("admin")
 						.requestMatchers("/authentication/**").permitAll()
 						.requestMatchers("/api/v1/category").permitAll()
 						.requestMatchers("/api/v1/cart/**").authenticated()

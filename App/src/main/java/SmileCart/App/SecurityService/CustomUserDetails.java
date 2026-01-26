@@ -23,7 +23,7 @@ public class CustomUserDetails implements UserDetailsService {
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		UserEntity user = userRepo.findByemail(username).orElseThrow(() -> new RuntimeException("user was not found"));
 		return new User(user.getEmail(), user.getPassword(),
-				List.of(new SimpleGrantedAuthority("ROLE_"+user.getRole())));
+				List.of(new SimpleGrantedAuthority(user.getRole())));
 	}
 //	@Autowired
 //	private UserRepository userRepo;
