@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -20,6 +21,7 @@ import org.springframework.web.cors.CorsConfiguration;
 
 import SmileCart.App.security.JwtFilter;
 
+@EnableMethodSecurity
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -36,22 +38,16 @@ public class SecurityConfig {
 			config.setAllowCredentials(true);
 			return config;
 		})).sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-				.authorizeHttpRequests(auth -> 
-				auth.requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
-				.requestMatchers("/api/admin/**").hasAuthority("admin")
-						.requestMatchers("/authentication/**").permitAll()
-						.requestMatchers("/api/v1/category").permitAll()
-						.requestMatchers("/api/v1/cart/**").authenticated()
-						.requestMatchers("/api/v1/product").permitAll()
-						.requestMatchers("/api/v1/order/**").authenticated()
-						.requestMatchers("/api/v1/user/**").permitAll()
-						.requestMatchers("/api/v1/product/**").permitAll()
-						.requestMatchers("/api/v1/category/**").permitAll()
-						.requestMatchers("/api/v1/user/**").permitAll()
-						.anyRequest().authenticated()
-						)
+				.authorizeHttpRequests(auth -> auth.requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**")
+						.permitAll().requestMatchers("/api/admin/**").hasAuthority("admin")
+						.requestMatchers("/authentication/**").permitAll().requestMatchers("/api/v1/category")
+						.permitAll().requestMatchers("/api/v1/cart/**").authenticated()
+						.requestMatchers("/api/v1/product").permitAll().requestMatchers("/api/v1/order/**")
+						.authenticated().requestMatchers("/api/v1/user/**").permitAll()
+						.requestMatchers("/api/v1/product/**").permitAll().requestMatchers("/api/v1/category/**")
+						.permitAll().requestMatchers("/api/v1/user/**").permitAll().anyRequest().authenticated())
 				.addFilterBefore(Filter, UsernamePasswordAuthenticationFilter.class);
-return http.build();
+		return http.build();
 	}
 
 	@Bean

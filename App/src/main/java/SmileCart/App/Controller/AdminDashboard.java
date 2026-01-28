@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import SmileCart.App.Model.OrderEntity;
+import SmileCart.App.Model.Product;
 import SmileCart.App.Repository.OrderRepository;
 import SmileCart.App.Repository.ProductRepository;
 import SmileCart.App.Repository.UserRepository;
@@ -49,7 +50,18 @@ public class AdminDashboard {
 	public ResponseEntity<?> getAllOrder() {
 		try {
 			List<OrderEntity> allOrders = orderRepo.findAll();
-			return ResponseEntity.status(HttpStatus.OK).body(allOrders);	
+			return ResponseEntity.status(HttpStatus.OK).body(allOrders);
+
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+		}
+	}
+
+	@GetMapping("/all-products")
+	public ResponseEntity<?> getAllProduct() {
+		try {
+			List<Product> allProduct = productRepo.findAll();
+			return ResponseEntity.status(HttpStatus.OK).body(allProduct);
 
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
