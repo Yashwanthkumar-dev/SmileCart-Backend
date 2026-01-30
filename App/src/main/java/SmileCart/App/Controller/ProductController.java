@@ -46,6 +46,7 @@ public class ProductController {
 	}
 
 	// update product
+	@PreAuthorize("hasAuthority('admin')")
 	@PutMapping
 	public ResponseEntity<?> updateProduct(@RequestParam String oldProductName, @RequestParam String newProductName,
 			@RequestParam Double productPrice, @RequestParam String productDescription,

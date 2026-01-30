@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import SmileCart.App.Model.OrderEntity;
 import SmileCart.App.Model.Product;
+import SmileCart.App.Model.UserEntity;
 import SmileCart.App.Repository.OrderRepository;
 import SmileCart.App.Repository.ProductRepository;
 import SmileCart.App.Repository.UserRepository;
@@ -63,6 +64,16 @@ public class AdminDashboard {
 			List<Product> allProduct = productRepo.findAll();
 			return ResponseEntity.status(HttpStatus.OK).body(allProduct);
 
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+		}
+	}
+
+	@GetMapping("/total-user")
+	public ResponseEntity<?> getAllUserCount() {
+		try {
+			Long allUser = userRepo.count();
+			return ResponseEntity.status(HttpStatus.OK).body( allUser);
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
 		}

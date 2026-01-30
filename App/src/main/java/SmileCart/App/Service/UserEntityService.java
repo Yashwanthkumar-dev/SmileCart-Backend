@@ -103,7 +103,7 @@ public class UserEntityService {
 		}
 	}
 
-	public ResponseEntity<?> deleteUserByEmail(Long id) {
+	public ResponseEntity<?> deleteUserById(Long id) {
 		try {
 			Optional<UserEntity> user = userRepo.findById(id);
 			if (user.isEmpty()) {
@@ -126,7 +126,17 @@ public class UserEntityService {
 			user.setEmail(email);
 			user.setPassword(passwordEncoder.encode(password));
 			userRepo.save(user);
-			return ResponseEntity.status(HttpStatus.CREATED).body("created successfully"); 
+			return ResponseEntity.status(HttpStatus.CREATED).body("created successfully");
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+		}
+	}
+
+	public ResponseEntity<?> deleteUserByEmail(String email) {
+		try {
+			UserEntity user = userRepo.findByemail(email).orElseThrow(() -> new RuntimeException("user was not found"));
+			userRepo.delete(user);
+			return ResponseEntity.status(HttpStatus.ACCEPTED).body("user was deleted successfully");
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
 		}
