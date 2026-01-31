@@ -62,8 +62,6 @@ public class JwtUtil {
 	private int EXPIRATION = 1000 * 60 * 60;
 	@Autowired
 	private UserRepository userRepo;
-//	@Value("${secret}")
-//	private String secretKey;
 
 //	create token
 	public String generateToken(String userEmail) {
