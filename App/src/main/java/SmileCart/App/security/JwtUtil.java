@@ -7,6 +7,7 @@ import java.util.Optional;
 import javax.crypto.SecretKey;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import SmileCart.App.Model.UserEntity;
@@ -61,6 +62,8 @@ public class JwtUtil {
 	private int EXPIRATION = 1000 * 60 * 60;
 	@Autowired
 	private UserRepository userRepo;
+//	@Value("${secret}")
+//	private String secretKey;
 
 //	create token
 	public String generateToken(String userEmail) {
