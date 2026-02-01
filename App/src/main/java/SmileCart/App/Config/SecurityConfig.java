@@ -29,25 +29,28 @@ public class SecurityConfig {
 	private JwtFilter Filter;
 
 	@Bean
-	public SecurityFilterChain securityFilterChain(HttpSecurity http) {
-		http.csrf((csrf) -> csrf.disable()).cors(cors -> cors.configurationSource(request -> {
-			CorsConfiguration config = new CorsConfiguration();
-			config.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
-			config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-			config.setAllowedHeaders(Collections.singletonList("*"));
-			config.setAllowCredentials(true);
-			return config;
-		})).sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-				.authorizeHttpRequests(auth -> auth.requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**")
-						.permitAll().requestMatchers("/api/admin/**").hasAuthority("admin")
-						.requestMatchers("/authentication/**").permitAll().requestMatchers("/api/v1/category")
-						.permitAll().requestMatchers("/api/v1/cart/**").authenticated()
-						.requestMatchers("/api/v1/product").permitAll().requestMatchers("/api/v1/order/**")
-						.authenticated().requestMatchers("/api/v1/user/**").permitAll()
-						.requestMatchers("/api/v1/product/**").permitAll().requestMatchers("/api/v1/category/**")
-						.permitAll().requestMatchers("/api/v1/user/**").permitAll().anyRequest().authenticated())
-				.addFilterBefore(Filter, UsernamePasswordAuthenticationFilter.class);
-		return http.build();
+	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+	    http.csrf(csrf -> csrf.disable())
+	        .cors(cors -> cors.configurationSource(request -> {
+	            CorsConfiguration config = new CorsConfiguration();
+	            config.setAllowedOriginPatterns(Arrays.asList("http://localhost:3000", "https://*.render.com", "https://your-frontend-url.vercel.app"));
+	            config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+	            config.setAllowedHeaders(Arrays.asList("*"));
+	            config.setAllowCredentials(true);
+	            return config;
+	        }))
+	        .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+	        .authorizeHttpRequests(auth -> auth
+	            .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+	            .requestMatchers("/authentication/**").permitAll()
+	            .requestMatchers("/api/admin/**").hasAnyAuthority("admin", "ROLE_admin")
+	            .requestMatchers(HttpMethod.DELETE, "/api/v1/user/**").hasAnyAuthority("admin", "ROLE_admin")
+	            .requestMatchers("/api/v1/product/**", "/api/v1/category/**").permitAll()
+	            .requestMatchers("/api/v1/cart/**", "/api/v1/order/**").authenticated()
+	            .anyRequest().authenticated()
+	        )
+	        .addFilterBefore(Filter, UsernamePasswordAuthenticationFilter.class);
+	    return http.build();
 	}
 
 	@Bean
