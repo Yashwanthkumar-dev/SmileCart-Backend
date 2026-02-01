@@ -31,13 +31,14 @@ public class SecurityConfig {
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 	    http.csrf(csrf -> csrf.disable())
-	        .cors(cors -> cors.configurationSource(request -> {
-	            CorsConfiguration config = new CorsConfiguration();
-	            config.setAllowedOriginPatterns(Arrays.asList("http://localhost:3000", "https://*.render.com", "https://your-frontend-url.vercel.app"));
-	            config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-	            config.setAllowedHeaders(Arrays.asList("*"));
-	            config.setAllowCredentials(true);
-	            return config;
+				.cors(cors -> cors.configurationSource(request -> {
+					CorsConfiguration config = new CorsConfiguration();
+					// Indha oru line-ah mattum maathunga
+					config.setAllowedOriginPatterns(Collections.singletonList("*"));
+					config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+					config.setAllowedHeaders(Arrays.asList("*"));
+					config.setAllowCredentials(true);
+					return config;
 	        }))
 	        .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 	        .authorizeHttpRequests(auth -> auth
