@@ -51,7 +51,7 @@ public class AuthentionController {
 		if (dto.getRole() != null) {
 			newUser.setRole(dto.getRole());
 		} else {
-			newUser.setRole("USER");
+			newUser.setRole("admin");
 		}
 		userRepo.save(newUser);
 		return ResponseEntity.status(HttpStatus.CREATED).body("User was successfully created");
